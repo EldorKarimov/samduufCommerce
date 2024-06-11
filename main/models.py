@@ -43,7 +43,7 @@ class About(BaseModel):
     
 class Contact(BaseModel):
     full_name = models.CharField(max_length=150, verbose_name=_("full name"))
-    phone = models.CharField(max_length=13, validators=[
+    phone = models.CharField(max_length=13, null=True, validators=[
         RegexValidator(r'^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$')
     ], verbose_name=_("phone"))
     email = models.EmailField(verbose_name=_("email"), null=True, blank=True)
@@ -60,10 +60,12 @@ class Contact(BaseModel):
 class OurProjects(BaseModel):
     name = models.CharField(max_length=50, verbose_name=_("name"))
     title = models.CharField(max_length=150, verbose_name=_("title"))
+    slug = models.SlugField(max_length=150, unique=True, verbose_name=_('slug'))
     description = models.TextField(verbose_name=_("description"))
     project_url = models.URLField(validators=[URLValidator], verbose_name=_("project link"))
     client = models.CharField(max_length=50, verbose_name='client')
     created_date = models.DateField(verbose_name=_('project created date'))
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, verbose_name=_("category"))
 
     def __str__(self):
         return self.name

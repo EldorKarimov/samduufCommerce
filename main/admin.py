@@ -35,6 +35,7 @@ class ProjectImagesInline(admin.TabularInline):
 @admin.register(OurProjects)
 class OurProjectsAdmin(admin.ModelAdmin):
     list_display = ('name', 'title', 'client', 'created_date', 'created', 'updated')
+    prepopulated_fields = {'slug':('name', )}
     search_fields = ('name', 'title')
     ordering = ('-created_date', )
     readonly_fields = ('created', 'updated')

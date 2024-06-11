@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from main.models import *
 from common.utils import phone_validator
+from rest_framework.exceptions import ValidationError
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
@@ -50,16 +51,36 @@ class ContactSerializer(serializers.ModelSerializer):
             'created':{'read_only':True},
             'updated':{'read_only':True},
             'id':{'read_only':True},
+            # 'email':{'required':False}
         }
     def validate_phone(self, obj):
         if phone_validator(obj) == 'invalid':
-            raise ValueError({'error':'phone number is not valid'})
+            raise ValidationError({'phone':'phone number is not valid'})
+        return obj
+    
+    def create(self, validated_data):
+        Contact.objects.create(
+            full_name = validated_data['full_name'],
+            phone = validated_data['phone'],
+            email = validated_data.get('email', 'null'),
+            text = validated_data['text'],
+            category = validated_data['category']
+        )
+        return super().create(validated_data)
+    
+class ProjectImagesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProjectImages
+        fields = '__all__'
 
 class OurProjectsSerializer(serializers.ModelSerializer):
-    images = serializers.SerializerMethodField()
+    pictures = serializers.SerializerMethodField()
+    category = CategorySerializer()
+
     class Meta:
         model = OurProjects
-        fields = ('id', 'name', 'title', 'description', 'project_url', 'client', 'created_date', 'images' 'created', 'updated')
-
-    def get_images(self, obj):
-        return ProjectImages.objects.filter(project_id = obj.id)
+        fields = ('id', 'name', 'title', 'description', 'project_url', 'client', 'created_date', 'category', 'pictures', 'created', 'updated')
+    
+    def get_pictures(self, obj):
+        pictures = ProjectImages.objects.filter(project = obj)
+        return ProjectImagesSerializer(pictures, many = True).data
