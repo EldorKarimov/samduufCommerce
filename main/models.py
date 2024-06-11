@@ -2,6 +2,7 @@ from django.db import models
 from common.models import BaseModel
 from django.utils.translation import gettext_lazy as _
 from django.core.validators import RegexValidator, URLValidator, FileExtensionValidator
+from ckeditor_uploader.fields import RichTextUploadingField
 
 class Category(BaseModel):
     name = models.CharField(max_length=150, verbose_name=_("name"))
@@ -17,9 +18,9 @@ class Category(BaseModel):
 class Services(BaseModel):
     title = models.CharField(max_length=255, verbose_name=_("title"))
     slug = models.SlugField(max_length=255, unique=True, verbose_name=_("slug"))
-    short_description = models.TextField(verbose_name=_("short description"))
+    short_description = RichTextUploadingField(verbose_name=_("short description"))
     image = models.ImageField(upload_to='media/services/images', verbose_name=_("image"))
-    description = models.TextField(verbose_name=_("description"))
+    description = RichTextUploadingField(verbose_name=_("description"))
     icon = models.CharField(max_length=50, verbose_name=_("icon"))
     category = models.ForeignKey(Category, on_delete=models.CASCADE, verbose_name=_("category"))
 
@@ -32,7 +33,7 @@ class Services(BaseModel):
 
 class About(BaseModel):
     name = models.CharField(max_length=150, verbose_name=_("name"))
-    description = models.TextField(verbose_name=_("description"))
+    description = RichTextUploadingField(verbose_name=_("description"))
 
     def __str__(self):
         return self.name
@@ -61,7 +62,7 @@ class OurProjects(BaseModel):
     name = models.CharField(max_length=50, verbose_name=_("name"))
     title = models.CharField(max_length=150, verbose_name=_("title"))
     slug = models.SlugField(max_length=150, unique=True, verbose_name=_('slug'))
-    description = models.TextField(verbose_name=_("description"))
+    description = RichTextUploadingField(verbose_name=_("description"))
     project_url = models.URLField(validators=[URLValidator], verbose_name=_("project link"))
     client = models.CharField(max_length=50, verbose_name='client')
     created_date = models.DateField(verbose_name=_('project created date'))

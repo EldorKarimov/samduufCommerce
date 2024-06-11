@@ -1,7 +1,7 @@
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
-from rest_framework.exceptions import ValidationError
+from rest_framework.exceptions import ValidationError, NotFound
 
 from main.models import *
 from .serializers import *
@@ -36,7 +36,18 @@ class ServicesListAPIView(APIView):
     
 class ServicesDetailAPIView(APIView):
     def get(self, request, cat_slug, service_slug):
-        pass
+        try:
+            service = Services.objects.get(category__slug = cat_slug, slug = service_slug)
+        except Services.DoesNotExist:
+            raise NotFound(detail={
+                'success':False,
+                'detail':"Not found"
+            })
+        serializer = ServicesSerializer(service)
+        return Response({
+            'success':True,
+            'data':serializer.data
+        }, status=status.HTTP_200_OK)
 
 class AboutAPIView(APIView):
     def get(self, request):
@@ -79,3 +90,18 @@ class OurProjectsListAPIView(APIView):
             'data':serializer.data
         }
         return Response(data=data, status=status.HTTP_200_OK)
+    
+class OurProjectDetailAPIView(APIView):
+    def get(self, request, cat_slug, project_slug):
+        try:
+            project = OurProjects.objects.get(category__slug = cat_slug, slug = project_slug)
+        except OurProjects.DoesNotExist:
+            raise NotFound(detail={
+                'success': False,
+                'detail': "Not found"
+            })
+        serializer = OurProjectsSerializer(project)
+        return Response({
+            'success':True,
+            'data':serializer.data
+        }, status=status.HTTP_200_OK)

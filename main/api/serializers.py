@@ -79,7 +79,7 @@ class OurProjectsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = OurProjects
-        fields = ('id', 'name', 'title', 'description', 'project_url', 'client', 'created_date', 'category', 'pictures', 'created', 'updated')
+        fields = ('id', 'name', 'slug', 'title', 'description', 'project_url', 'client', 'created_date', 'category', 'pictures', 'created', 'updated')
     
     def get_pictures(self, obj):
         pictures = ProjectImages.objects.filter(project = obj)
