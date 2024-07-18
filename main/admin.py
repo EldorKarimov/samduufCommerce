@@ -7,12 +7,10 @@ class CategoryAdmin(admin.ModelAdmin):
     prepopulated_fields = {"slug":('name', )}
     search_fields = ('name', )
 
-@admin.register(AdvantagesService)
-class AdvantagesServiceAdmin(admin.ModelAdmin):
-    list_display = ('name', 'service', 'created', 'updated')
-    list_filter = ('service', )
-    search_fields = ('name', )
-    ordering = ('-created', )
+
+class AdvantagesServiceAdmin(admin.TabularInline):
+    model = AdvantagesService
+    extra = 3
 
 @admin.register(Services)
 class ServicesAdmin(admin.ModelAdmin):
@@ -22,6 +20,7 @@ class ServicesAdmin(admin.ModelAdmin):
     list_filter = ('category', )
     ordering = ('-created',)
     readonly_fields = ('created', 'updated')
+    inlines = [AdvantagesServiceAdmin]
 
 @admin.register(About)
 class AboutAdmin(admin.ModelAdmin):

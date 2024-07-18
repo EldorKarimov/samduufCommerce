@@ -21,7 +21,11 @@ class Services(BaseModel):
     short_description = RichTextUploadingField(verbose_name=_("short description"))
     image = models.ImageField(upload_to='media/services/images', verbose_name=_("image"))
     description = RichTextUploadingField(verbose_name=_("description"))
-    icon = models.CharField(max_length=50, verbose_name=_("icon"))
+    icon = models.ImageField(
+        upload_to='media/services/icons', 
+        validators=[FileExtensionValidator(allowed_extensions=['svg', 'jpg', 'png'])],
+        verbose_name=_('icon images')
+    )
     category = models.ForeignKey(Category, on_delete=models.CASCADE, verbose_name=_("category"))
 
     def __str__(self):
