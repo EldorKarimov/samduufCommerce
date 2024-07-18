@@ -21,7 +21,7 @@ class Services(BaseModel):
     short_description = RichTextUploadingField(verbose_name=_("short description"))
     image = models.ImageField(upload_to='media/services/images', verbose_name=_("image"))
     description = RichTextUploadingField(verbose_name=_("description"))
-    icon = models.ImageField(
+    icon = models.FileField(
         upload_to='media/services/icons', 
         validators=[FileExtensionValidator(allowed_extensions=['svg', 'jpg', 'png'])],
         verbose_name=_('icon images')
