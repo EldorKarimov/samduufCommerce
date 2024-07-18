@@ -13,16 +13,27 @@ class CategorySerializer(serializers.ModelSerializer):
             'id':{'read_only':True},
         }
 
+class AdvantageServiceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AdvantagesService
+        fields = ('id', 'name', )
+
 class ServicesSerializer(serializers.ModelSerializer):
     category = CategorySerializer()
+    advantages = serializers.SerializerMethodField()
     class Meta:
         model = Services
-        fields = ('id', 'title', 'slug', 'short_description', 'image', 'description', 'icon', 'category', 'created', 'updated')
+        fields = ('id', 'title', 'slug', 'short_description', 'image', 'description', 'icon', 'category', 'advantages', 'created', 'updated')
         extra_fields = {
             'created':{'read_only':True},
             'updated':{'read_only':True},
             'id':{'read_only':True},
         }
+    
+    def get_advantages(self, obj):
+        advantages = AdvantagesService.objects.filter(service = obj)
+        return AdvantageServiceSerializer(advantages, many = True).data
+    
 
 class AboutSerializer(serializers.ModelSerializer):
     class Meta:
@@ -57,16 +68,6 @@ class ContactSerializer(serializers.ModelSerializer):
         if phone_validator(obj) == 'invalid':
             raise ValidationError({'phone':'phone number is not valid'})
         return obj
-    
-    def create(self, validated_data):
-        Contact.objects.create(
-            full_name = validated_data['full_name'],
-            phone = validated_data['phone'],
-            email = validated_data.get('email', 'null'),
-            text = validated_data['text'],
-            category = validated_data['category']
-        )
-        return super().create(validated_data)
     
 class ProjectImagesSerializer(serializers.ModelSerializer):
     class Meta:

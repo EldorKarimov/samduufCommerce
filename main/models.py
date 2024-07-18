@@ -31,6 +31,13 @@ class Services(BaseModel):
         verbose_name = _("Service")
         verbose_name_plural = _("Services")
 
+class AdvantagesService(BaseModel):
+    name = models.CharField(max_length=255, verbose_name=_("name"))
+    service = models.ForeignKey(Services, on_delete=models.CASCADE, related_name="service")
+
+    def __str__(self):
+        return self.name
+
 class About(BaseModel):
     name = models.CharField(max_length=150, verbose_name=_("name"))
     description = RichTextUploadingField(verbose_name=_("description"))

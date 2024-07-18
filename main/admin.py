@@ -7,6 +7,13 @@ class CategoryAdmin(admin.ModelAdmin):
     prepopulated_fields = {"slug":('name', )}
     search_fields = ('name', )
 
+@admin.register(AdvantagesService)
+class AdvantagesServiceAdmin(admin.ModelAdmin):
+    list_display = ('name', 'service', 'created', 'updated')
+    list_filter = ('service', )
+    search_fields = ('name', )
+    ordering = ('-created', )
+
 @admin.register(Services)
 class ServicesAdmin(admin.ModelAdmin):
     list_display = ('title', 'category', 'created', 'updated')
